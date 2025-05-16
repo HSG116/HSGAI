@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإعدادات - HSG AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6e00ff;
+            --primary-light: #8d3aff;
+            --secondary: #ff00e4;
+            --secondary-light: #ff4dec;
+            --dark: #0a041a;
+            --dark-light: #1a0c3a;
+            --light: #f0f0ff;
+            --light-dark: #d0d0e0;
+            --accent: #00f7ff;
+            --accent-dark: #00c4cc;
+            --error: #ff3860;
+            --success: #00d1b2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--dark);
+            color: var(--light);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .settings-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            color: var(--accent);
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .support-card {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .support-title {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: var(--light);
+        }
+
+        .support-description {
+            margin-bottom: 20px;
+            color: var(--light-dark);
+        }
+
+        .support-button {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--dark);
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .support-button:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+        }
+
+        .rating-section {
+            margin-top: 20px;
+        }
+
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .star {
+            font-size: 2em;
+            color: var(--light-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .star.active {
+            color: var(--accent);
+        }
+
+        .comment-box {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--light);
+            margin-bottom: 20px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-rating {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .submit-rating:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(110, 0, 255, 0.4);
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: var(--primary);
+            color: white;
+            border-radius: 8px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification.error {
+            background: var(--error);
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .advanced-settings {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-item label {
+            color: var(--light);
+            font-size: 1.1em;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--dark-light);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .language-select {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .language-select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="settings-section">
+            <h2 class="section-title">الإعدادات</h2>
+            <!-- إعدادات المستخدم هنا -->
+        </div>
+
+        <div class="settings-section rating-section">
+            <h2 class="section-title">تقييم التطبيق</h2>
+            <div class="stars">
+                <i class="fas fa-star star" data-rating="1"></i>
+                <i class="fas fa-star star" data-rating="2"></i>
+                <i class="fas fa-star star" data-rating="3"></i>
+                <i class="fas fa-star star" data-rating="4"></i>
+                <i class="fas fa-star star" data-rating="5"></i>
+            </div>
+            <textarea class="comment-box" placeholder="اكتب تعليقك هنا..."></textarea>
+            <button class="submit-rating">إرسال التقييم</button>
+        </div>
+
+        <div class="settings-section">
+            <h2 class="section-title">الإعدادات المتقدمة</h2>
+            <div class="advanced-settings">
+                <div class="setting-item">
+                    <label>الوضع الليلي</label>
+                    <label class="switch">
+                        <input type="checkbox" id="darkMode">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label>الإشعارات</label>
+                    <label class="switch">
+                        <input type="checkbox" id="notifications">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label>اللغة</label>
+                    <select class="language-select">
+                        <option value="ar">العربية</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="support-card">
+                <h3 class="support-title">الدعم الفني</h3>
+                <p class="support-description">هل تحتاج إلى مساعدة؟ تواصل معنا عبر واتساب</p>
+                <a href="https://wa.me/972592311460?text=مرحباً" class="support-button" target="_blank">
+                    <i class="fab fa-whatsapp"></i> تواصل معنا
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // تحميل التوكن من التخزين المحلي
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/login.html';
+        }
+
+        // نظام التقييم
+        const stars = document.querySelectorAll('.star');
+        let selectedRating = 0;
+
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                const rating = parseInt(star.dataset.rating);
+                selectedRating = rating;
+                
+                stars.forEach(s => {
+                    if (parseInt(s.dataset.rating) <= rating) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+            });
+
+            star.addEventListener('mouseover', () => {
+                const rating = parseInt(star.dataset.rating);
+                stars.forEach(s => {
+                    if (parseInt(s.dataset.rating) <= rating) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+            });
+
+            star.addEventListener('mouseout', () => {
+                stars.forEach(s => {
+                    if (parseInt(s.dataset.rating) <= selectedRating) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // إرسال التقييم
+        document.querySelector('.submit-rating').addEventListener('click', async () => {
+            if (!selectedRating) {
+                showNotification('الرجاء اختيار تقييم', 'error');
+                return;
+            }
+
+            const comment = document.querySelector('.comment-box').value;
+
+            try {
+                const response = await fetch('/api/ratings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        rating: selectedRating,
+                        comment
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showNotification('تم إرسال التقييم بنجاح', 'success');
+                    document.querySelector('.comment-box').value = '';
+                    stars.forEach(s => s.classList.remove('active'));
+                    selectedRating = 0;
+                } else {
+                    showNotification(data.message || 'حدث خطأ أثناء إرسال التقييم', 'error');
+                }
+            } catch (error) {
+                showNotification('حدث خطأ في الاتصال', 'error');
+            }
+        });
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // إعدادات متقدمة
+        const darkMode = document.getElementById('darkMode');
+        const notifications = document.getElementById('notifications');
+        const languageSelect = document.querySelector('.language-select');
+
+        // تحميل الإعدادات المحفوظة
+        darkMode.checked = localStorage.getItem('darkMode') === 'true';
+        notifications.checked = localStorage.getItem('notifications') === 'true';
+        languageSelect.value = localStorage.getItem('language') || 'ar';
+
+        // حفظ الإعدادات عند التغيير
+        darkMode.addEventListener('change', () => {
+            localStorage.setItem('darkMode', darkMode.checked);
+            // تطبيق الوضع الليلي
+        });
+
+        notifications.addEventListener('change', () => {
+            localStorage.setItem('notifications', notifications.checked);
+            // تفعيل/تعطيل الإشعارات
+        });
+
+        languageSelect.addEventListener('change', () => {
+            localStorage.setItem('language', languageSelect.value);
+            // تغيير اللغة
+        });
+    </script>
+</body>
+</html> 
