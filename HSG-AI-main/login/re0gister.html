@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no">
+    <title>إنشاء حساب جديد - HSG AI</title>
+    <link rel="icon" href="https://i.postimg.cc/bJ4MsXmj/1000023429.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <link rel="stylesheet" href="../assets/styles/copyright.css">
+    <style>
+        :root {
+            --primary: #6e00ff;
+            --primary-light: #8d3aff;
+            --secondary: #ff00e4;
+            --secondary-light: #ff4dec;
+            --dark: #0a041a;
+            --dark-light: #1a0c3a;
+            --light: #f0f0ff;
+            --light-dark: #d0d0e0;
+            --accent: #00f7ff;
+            --accent-dark: #00c4cc;
+            --error: #ff3860;
+            --success: #00d1b2;
+            --bg: var(--dark);
+            --text: var(--light);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(110, 0, 255, 0.15) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(255, 0, 228, 0.15) 0%, transparent 30%);
+            color: var(--text);
+        }
+
+        .logo-container {
+            text-align: center;
+            padding: 20px 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 0;
+        }
+
+        .logo-subtitle {
+            font-size: 0.4em;
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        .register-container {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .register-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: var(--text);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .register-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification.success {
+            background: var(--success);
+            color: white;
+        }
+
+        .notification.error {
+            background: var(--error);
+            color: white;
+        }
+
+        .links {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .links a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .links a:hover {
+            color: var(--accent-dark);
+        }
+
+        .password-requirements {
+            font-size: 0.9em;
+            color: var(--light-dark);
+            margin-top: 5px;
+        }
+
+        .password-strength {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <script src="../scripts/auth-check.js"></script>
+    <script src="../scripts/db-handler.js"></script>
+    <script src="../scripts/auth.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script type="module">
+        import DBHandler from '../scripts/db-handler.js';
+        
+        const dbHandler = new DBHandler();
+        const form = document.getElementById('register-form');
+        const passwordInput = document.getElementById('password');
+        const strengthBar = document.querySelector('.password-strength-bar');
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function updatePasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength += 25;
+            if (password.match(/[A-Z]/)) strength += 25;
+            if (password.match(/[0-9]/)) strength += 25;
+            if (password.match(/[^A-Za-z0-9]/)) strength += 25;
+
+            strengthBar.style.width = `${strength}%`;
+            
+            if (strength <= 25) {
+                strengthBar.style.backgroundColor = '#ff3860';
+            } else if (strength <= 50) {
+                strengthBar.style.backgroundColor = '#ffdd57';
+            } else if (strength <= 75) {
+                strengthBar.style.backgroundColor = '#ffaa00';
+            } else {
+                strengthBar.style.backgroundColor = '#00d1b2';
+            }
+        }
+
+        passwordInput.addEventListener('input', (e) => {
+            updatePasswordStrength(e.target.value);
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (password !== confirmPassword) {
+                showNotification('كلمة المرور غير متطابقة', 'error');
+                return;
+            }
+
+            if (password.length < 8) {
+                showNotification('كلمة المرور يجب أن تكون 8 أحرف على الأقل', 'error');
+                return;
+            }
+
+            // Check if username already exists
+            if (dbHandler.findUser(username)) {
+                showNotification('اسم المستخدم موجود بالفعل', 'error');
+                return;
+            }
+
+            try {
+                dbHandler.addUser({
+                    username,
+                    password,
+                    createdAt: new Date().toISOString()
+                });
+
+                showNotification('تم إنشاء الحساب بنجاح');
+                setTimeout(() => {
+                    window.location.href = 'l0gin.html';
+                }, 1500);
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification(error.message || 'حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.', 'error');
+            }
+        });
+    </script>
+    <script>
+    // التحقق من عدم تسجيل الدخول - إذا كان مسجل دخول يتم توجيهه للصفحة الرئيسية
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentUser = sessionStorage.getItem('currentUser');
+        if (currentUser) {
+            window.location.href = '../indkex.html';
+        }
+    });
+    </script>
+    
+    <div class="logo-container">
+        <div class="logo">HSG AI<div class="logo-subtitle">مساعد ذكي متطور</div></div>
+    </div>
+
+    <div class="register-container">
+        <div class="register-card">
+            <h2 style="text-align: center; margin-bottom: 30px; color: var(--accent);">إنشاء حساب جديد</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="username">اسم المستخدم</label>
+                    <input type="text" id="username" required minlength="3">
+                </div>
+                <div class="form-group">
+                    <label for="password">كلمة المرور</label>
+                    <input type="password" id="password" required minlength="8">
+                    <div class="password-strength">
+                        <div class="password-strength-bar"></div>
+                    </div>
+                    <div class="password-requirements">
+                        يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">تأكيد كلمة المرور</label>
+                    <input type="password" id="confirm-password" required>
+                </div>
+                <button type="submit" class="register-button">إنشاء الحساب</button>
+            </form>
+            <div class="links">
+                <p>لديك حساب بالفعل؟ <a href="l0gin.html">تسجيل الدخول</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no">
+    <title>إعادة تعيين كلمة المرور - HSG AI</title>
+    <link rel="icon" href="https://i.postimg.cc/bJ4MsXmj/1000023429.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <link rel="stylesheet" href="../assets/styles/copyright.css">
+    <style>
+        :root {
+            --primary: #6e00ff;
+            --primary-light: #8d3aff;
+            --secondary: #ff00e4;
+            --secondary-light: #ff4dec;
+            --dark: #0a041a;
+            --dark-light: #1a0c3a;
+            --light: #f0f0ff;
+            --light-dark: #d0d0e0;
+            --accent: #00f7ff;
+            --accent-dark: #00c4cc;
+            --error: #ff3860;
+            --success: #00d1b2;
+            --bg: var(--dark);
+            --text: var(--light);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(110, 0, 255, 0.15) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(255, 0, 228, 0.15) 0%, transparent 30%);
+            color: var(--text);
+        }
+
+        .logo-container {
+            position: relative;
+            z-index: 100;
+            background: linear-gradient(90deg, rgba(10, 4, 26, 0.9), rgba(20, 10, 40, 0.9));
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2.8em;
+            font-weight: 800;
+            background: linear-gradient(45deg, #6e00ff, #00f7ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: glow 3s ease-in-out infinite;
+            text-shadow: 0 0 15px rgba(110, 0, 255, 0.4);
+            letter-spacing: 2px;
+        }
+
+        .logo-subtitle {
+            font-size: 0.5em;
+            margin-top: -10px;
+            color: var(--accent);
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .reset-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .reset-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--light);
+            font-size: 1.1em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: var(--light);
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(0, 247, 255, 0.2);
+        }
+
+        .verification-code {
+            display: none;
+        }
+
+        .verification-code.show {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .new-password {
+            display: none;
+        }
+
+        .new-password.show {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(110, 0, 255, 0.4);
+        }
+
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .timer {
+            text-align: center;
+            margin-top: 10px;
+            color: var(--light-dark);
+        }
+
+        .links {
+            margin-top: 20px;
+            text-align: center;
+            color: var(--light-dark);
+        }
+
+        .links a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .links a:hover {
+            color: var(--accent-dark);
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: var(--primary);
+            color: white;
+            border-radius: 8px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification.error {
+            background: var(--error);
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .progress-container {
+            display: none;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .progress-container.show {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            animation: progress 1.5s linear forwards;
+        }
+
+        @keyframes progress {
+            to { width: 100%; }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="logo-container">
+        <div class="logo">HSG AI<div class="logo-subtitle">مساعد ذكي متطور</div></div>
+    </div>
+
+    <div class="reset-container">
+        <div class="reset-card">
+            <h2 style="text-align: center; margin-bottom: 30px; color: var(--accent);">إعادة تعيين كلمة المرور</h2>
+            <form id="reset-form">
+                <div class="form-group">
+                    <label for="username">اسم المستخدم</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group verification-code" id="verification-section">
+                    <label for="verification-code">رمز التحقق</label>
+                    <input type="text" id="verification-code" maxlength="6" pattern="\d{6}">
+                    <div class="timer" id="timer"></div>
+                </div>
+                <div class="form-group new-password" id="new-password-section">
+                    <label for="new-password">كلمة المرور الجديدة</label>
+                    <input type="password" id="new-password" minlength="8">
+                    <label for="confirm-password">تأكيد كلمة المرور</label>
+                    <input type="password" id="confirm-password" minlength="8">
+                </div>
+                <button type="submit" id="submit-btn">إرسال</button>
+            </form>
+            <div class="links">
+                <p><a href="l0gin.html">العودة إلى تسجيل الدخول</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+    <div class="progress-container" id="progress-container">
+        <div class="progress-bar"></div>
+    </div>
+
+    <div class="copyright animate-on-scroll" data-aos="fade-up">
+        <p>© 2025 جميع الحقوق محفوظة</p>
+        <p>إتقانٌ يسبق الحديث HSG</p>
+    </div>
+
+    <script src="../scripts/auth-check.js"></script>
+    <script src="../scripts/db-handler.js"></script>
+    <script src="../scripts/auth.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script type="module">
+        import DBHandler from '../scripts/db-handler.js';
+        
+        const dbHandler = new DBHandler();
+        const form = document.getElementById('reset-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const verificationSection = document.getElementById('verification-section');
+        const newPasswordSection = document.getElementById('new-password-section');
+        const timer = document.getElementById('timer');
+        let verificationCode = '';
+        let step = 1;
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function startTimer(duration) {
+            let timeLeft = duration;
+            timer.textContent = `يمكنك طلب رمز جديد خلال: ${timeLeft} ثانية`;
+            
+            const interval = setInterval(() => {
+                timeLeft--;
+                timer.textContent = `يمكنك طلب رمز جديد خلال: ${timeLeft} ثانية`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    timer.textContent = 'يمكنك طلب رمز جديد الآن';
+                    submitBtn.disabled = false;
+                }
+            }, 1000);
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+
+            if (step === 1) {
+                const user = dbHandler.findUser(username);
+                if (!user) {
+                    showNotification('اسم المستخدم غير موجود', 'error');
+                    return;
+                }
+
+                verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+                showNotification(`رمز التحقق هو: ${verificationCode}`, 'success');
+                
+                verificationSection.classList.add('show');
+                submitBtn.textContent = 'تحقق من الرمز';
+                step = 2;
+                
+                submitBtn.disabled = true;
+                startTimer(60);
+                
+            } else if (step === 2) {
+                const inputCode = document.getElementById('verification-code').value;
+                if (inputCode !== verificationCode) {
+                    showNotification('رمز التحقق غير صحيح', 'error');
+                    return;
+                }
+
+                newPasswordSection.classList.add('show');
+                submitBtn.textContent = 'تغيير كلمة المرور';
+                step = 3;
+                
+            } else if (step === 3) {
+                const newPassword = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+
+                if (newPassword !== confirmPassword) {
+                    showNotification('كلمتا المرور غير متطابقتين', 'error');
+                    return;
+                }
+
+                if (newPassword.length < 8) {
+                    showNotification('كلمة المرور يجب أن تكون 8 أحرف على الأقل', 'error');
+                    return;
+                }
+
+                // Check if the new password was used in the last year
+                const passwordHistory = dbHandler.getPasswordHistoryForUser(username);
+                const hashedNewPassword = dbHandler.hashPassword(newPassword);
+                
+                const isPasswordReused = passwordHistory.some(entry => 
+                    entry.password === hashedNewPassword
+                );
+
+                if (isPasswordReused) {
+                    showNotification('لا يمكن استخدام كلمة مرور تم استخدامها خلال السنة الماضية', 'error');
+                    return;
+                }
+
+                try {
+                    if (dbHandler.updateUser(username, { password: newPassword })) {
+                        showNotification('تم تغيير كلمة المرور بنجاح', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'l0gin.html';
+                        }, 1500);
+                    } else {
+                        showNotification('حدث خطأ أثناء تحديث كلمة المرور', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showNotification(error.message || 'حدث خطأ أثناء تحديث كلمة المرور', 'error');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
